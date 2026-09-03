@@ -1,0 +1,20 @@
+[Unit]
+Description=OpenSUSE infra harness (in-process loop)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=infra-agent
+Group=infra-agent
+EnvironmentFile=/etc/infra-harness.env
+Environment=PYTHONPATH=/opt/infra-harness/src
+WorkingDirectory=/opt/infra-harness
+ExecStart=/opt/infra-harness/.venv/bin/python -m harness
+Restart=always
+RestartSec=30
+Nice=10
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

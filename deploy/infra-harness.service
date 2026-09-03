@@ -1,0 +1,18 @@
+[Unit]
+Description=OpenSUSE infra harness (single window)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=infra-agent
+Group=infra-agent
+EnvironmentFile=/etc/infra-harness.env
+Environment=PYTHONPATH=/opt/infra-harness/src
+WorkingDirectory=/opt/infra-harness
+ExecStart=/opt/infra-harness/.venv/bin/python -m harness --once
+Nice=10
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

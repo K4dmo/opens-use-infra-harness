@@ -1,0 +1,13 @@
+# Install as /etc/sudoers.d/infra-harness (visudo -c -f, mode 0440).
+# Keep in sync with ALLOWED_UNITS in /etc/infra-harness.env.
+# Our executor always adds --no-pager on systemctl.
+
+Defaults:infra-agent !requiretty
+
+Cmnd_Alias INFRA_JOURNAL = /usr/bin/journalctl *
+Cmnd_Alias INFRA_SS = /usr/sbin/ss *, /usr/bin/ss *
+Cmnd_Alias INFRA_SYSTEMCTL_READ = /usr/bin/systemctl status *, /usr/bin/systemctl is-active *, /usr/bin/systemctl is-failed *, /usr/bin/systemctl --failed, /usr/bin/systemctl show *, /usr/bin/systemctl list-units *
+Cmnd_Alias INFRA_SYSTEMCTL_MUT = /usr/bin/systemctl restart sshd.service --no-pager, /usr/bin/systemctl start sshd.service --no-pager, /usr/bin/systemctl stop sshd.service --no-pager, /usr/bin/systemctl restart cron.service --no-pager, /usr/bin/systemctl start cron.service --no-pager, /usr/bin/systemctl stop cron.service --no-pager, /usr/bin/systemctl restart nginx.service --no-pager, /usr/bin/systemctl start nginx.service --no-pager, /usr/bin/systemctl stop nginx.service --no-pager
+Cmnd_Alias INFRA_ZYPPER = /usr/bin/zypper --non-interactive patch-check, /usr/bin/zypper --non-interactive list-patches, /usr/bin/zypper --non-interactive lu, /usr/bin/zypper --non-interactive patch
+
+infra-agent ALL=(root) NOPASSWD: INFRA_JOURNAL, INFRA_SS, INFRA_SYSTEMCTL_READ, INFRA_SYSTEMCTL_MUT, INFRA_ZYPPER
