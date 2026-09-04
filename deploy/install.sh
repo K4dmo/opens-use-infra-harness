@@ -12,7 +12,17 @@ if [[ "$(id -u)" -ne 0 ]]; then
   exit 1
 fi
 
-id -u infra-agent >/dev/null 2>&1 || useradd --system --home "$DATA_DIR" --shell /usr/sbin/nologin infra-agent
+# SLES/openSUSE useradd --system does not create a matching group (unlike Debian -U).
+# systemd Group=infra-agent and chown user:group both need the group to exist.
+if ! getent group infra-agent >/dev/null; then
+  groupadd --system infra-agent
+fi
+if ! id -u infra-agent >/dev/null 2>&1; then
+  nologin=/usr/sbin/nologin
+  [[ -x "$nologin" ]] || nologin=/sbin/nologin
+  [[ -x "$nologin" ]] || nologin=/bin/false
+  useradd --system --gid infra-agent --home "$DATA_DIR" --shell "$nologin" infra-agent
+fi
 
 mkdir -p "$INSTALL_DIR" "$DATA_DIR/backups"
 cp -a "$ROOT/src" "$ROOT/prompts" "$ROOT/pyproject.toml" "$ROOT/setup.py" "$ROOT/requirements.txt" "$INSTALL_DIR/"

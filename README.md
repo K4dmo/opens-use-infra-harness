@@ -2,6 +2,8 @@
 
 Host-local SRE loop for a single OpenSUSE server: snapshot, OpenRouter tool-calling, bounded actions, Discord webhook. Python 3.9+, `httpx`, systemd timer (or in-process loop). Not part of Yungu. No UI; static env vars.
 
+**Tutorial em português (passo a passo para leigos):** [TUTORIAL.md](TUTORIAL.md)
+
 ## What it does
 
 1. Snapshot (no LLM): hostname, load, memory, disk, failed systemd units, `zypper patch-check`, recent journal errors.
